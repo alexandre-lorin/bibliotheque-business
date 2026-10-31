@@ -1,7 +1,7 @@
 [project]
 name = "toubi-bibliotheque-business"
 version = "0.2.0"
-description = "Bibliothèque Markdown et recherche locale de ressources business"
+description = "Local Markdown library and search engine for business resources"
 requires-python = ">=3.11"
 dependencies = []
 

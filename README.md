@@ -1,17 +1,41 @@
-# Bibliothèque business — moteur local
+# Business Library — Local Search Engine
 
-Code du moteur documentaire local, de la recherche RAG et du serveur MCP.
-Le corpus, les livres, les archives, les index, les données personnelles et les
-configurations de sources locales ne sont pas inclus dans ce dépôt.
+A local Markdown library engine with lexical search, optional retrieval-augmented generation (RAG), and an MCP server. Search results retain source and document-type information.
 
-Les fichiers `DEMARRER.md`, `RAG.md` et `pyproject.toml` décrivent le fonctionnement
-et les dépendances. Certains documents historiques décrivent le poste original ;
-leurs chemins et nombres de documents ne correspondent pas à une installation neuve.
+**This repository contains the engine, tests and technical documentation. It does not include the original books, document corpus, archives, generated indexes or private source configuration.**
 
-Pour utiliser le moteur, fournir son propre corpus avec les droits nécessaires,
-puis reconstruire ses index. Aucun téléchargement ni service automatique n’est
-activé par la seule copie de ce dépôt.
+## Requirements
 
-Tests unitaires : `python -m unittest discover -s tests -v`. Les scénarios
-qui nécessitent un corpus ou des dépendances optionnelles doivent être préparés
-séparément.
+Python 3.11 or newer. The lexical engine uses the standard library; optional components have their own dependencies.
+
+```sh
+git clone https://github.com/alexandre-lorin/bibliotheque-business.git
+cd bibliotheque-business
+python3 -m venv .venv
+source .venv/bin/activate
+python biblio.py --help
+```
+
+For optional RAG components, review `requirements-rag.txt`, the lockfiles and [RAG.md](RAG.md) before installing them. Provide your own appropriately licensed Markdown documents, configure their sources and build your own indexes. A fresh clone does not contain the original machine's library.
+
+## Document provenance
+
+The engine distinguishes full local text, original method sheets and reference-only records. A reference is not evidence that its contents were downloaded or read. Preserve provenance metadata and respect each source's redistribution conditions.
+
+## Tests
+
+```sh
+python -m unittest discover -s tests -v
+```
+
+Some recipes require optional dependencies or a prepared corpus. Historical document counts and machine-specific installation paths in validation notes describe the original environment, not a fresh checkout.
+
+## Documentation
+
+- [Getting started](DEMARRER.md)
+- [Local retrieval and RAG](RAG.md)
+- [Collection and reuse rules](DROITS.md)
+- [RAG validation record](VALIDATION-RAG.md)
+- [Initial validation record](VALIDATION.md)
+
+Cloning this repository does not activate downloads, background services or global integrations.

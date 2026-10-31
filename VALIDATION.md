@@ -1,40 +1,40 @@
-# Validation locale — 26 octobre 2026
+# Local validation — 26 October 2026
 
-## État livré
+## Delivered status
 
-- 3 442 entrées Markdown indexées.
-- 296 textes complets sous MIT : 53 fichiers de skills et 243 guides ou documents associés.
-- 24 fiches originales en français.
-- 3 122 références de sources, articles, cours et conférences, sans leur texte intégral.
-- 23 sources dans le catalogue éditorial, plus les fiches de Toubi.
-- 3 056 489 caractères de textes tiers complets ; les autres caractères comptés dans les statistiques sont des fiches et métadonnées de références.
+- 3 442 indexed Markdown entries.
+- 296 complete texts under MIT: 53 skills files and 243 guides or associated documents.
+- 24 original sheets in French.
+- 3 122 references to sources, articles, courses and conferences, without their full text.
+- 23 sources in the editorial catalog, plus the files from Toubi.
+- 3 056 489 complete third-party text characters; the other characters counted in the statistics are reference files and metadata.
 
-Les références comprennent notamment le catalogue public de Y Combinator et 2 485 URL de conférences ou podcasts Stanford issues du sitemap. Les titres Stanford sont inférés des URL. Les pages individuelles et transcriptions n'ont pas été lues ou téléchargées. Leurs liens peuvent devenir indisponibles.
+References include the Y Combinator public catalog and 2 485 URL of Stanford conferences or podcasts taken from the sitemap. Stanford titles are inferred from URLs. Individual pages and transcripts have not been read or downloaded. Their links may become unavailable.
 
-## Vérifications effectuées
+## Verifications carried out
 
-`python -m unittest discover -s tests -v` : neuf tests réussis sur le vrai moteur SQLite FTS5 local. Ils couvrent recherche sans accents, filtres, déduplication des passages, lecture intégrale, bornage du contexte et conservation des sources, reconstruction répétée, transaction annulée sur document invalide, détection d'une altération et découpage sans perte.
+`python -m unittest discover -s tests -v`: Nine tests passed on real local SQLite FTS5 engine. They cover search without accents, filters, deduplication of passages, full reading, context bounding and conservation of sources, repeated reconstruction, transaction canceled on invalid document, detection of an alteration and lossless cutting.
 
-Les collecteurs ont été exécutés sur les sources réelles. L'import des archives MIT, la récupération des métadonnées YC et le sitemap Stanford ont abouti. Les rapports de collecte conservent révisions, dates, empreintes, volumes et erreurs. Certains catalogues dynamiques ne livrent pas leurs contenus via des liens HTML : aucune couverture exhaustive n'est annoncée pour Bpifrance, Really Good Emails ou les sources à accès variable.
+The collectors were run on the actual sources. Import of MIT archives, recovery of YC metadata and Stanford sitemap was successful. Collection reports retain revisions, dates, fingerprints, volumes and errors. Some dynamic catalogs do not deliver their content via HTML links: no exhaustive coverage is announced for Bpifrance, Really Good Emails or sources with variable access.
 
-`python biblio.py check` : cohérence des identifiants, absence de doublons d'URL, présence des licences associées et empreintes des textes importés vérifiées.
+`python biblio.py check`: consistency of identifiers, absence of duplicate URLs, presence of associated licenses and fingerprints of imported texts verified.
 
-Lint Ruff : réussi, règles E4/E7/E9/F/I. Python standard uniquement pour l'exécution. Aucun vérificateur de types spécifique n'est configuré pour ce petit projet.
+Lint Ruff: passed, rules E4/E7/E9/F/I. Standard Python only for execution. No specific type checkers are configured for this small project.
 
-Les deux nouveaux skills passent le `quick_validate.py` officiel de `skill-creator`. Leur installation sélective dans `.agents/skills/` du projet a réussi. Les consignes originales et leurs copies locales sont identiques. Aucun skill tiers collecté n'a été activé.
+The two new skills pass the official `quick_validate.py` of `skill-creator`. Their selective installation in `.agents/skills/` of the project was successful. The original instructions and their local copies are identical. No collected third-party skills have been activated.
 
-Le [humanizer a été appliqué à cinq exemples](EVALUATION-HUMANIZER.md), puis relu dans cette session. Cette vérification illustre ses consignes ; elle n'est pas une évaluation indépendante de qualité rédactionnelle.
+The [humanizer was applied to five examples](EVALUATION-HUMANIZER.md), then reread in this session. This verification illustrates its instructions; it is not an independent assessment of editorial quality.
 
-## Audit de la structure
+## Audit of the structure
 
-Les Markdown restent la source de vérité. L'index SQLite est dérivé et peut être reconstruit. La recherche ne lance aucun appel réseau et ne charge pas le corpus entier dans le contexte de l'agent. Les extraits conservent source, état et droits ; les documents tiers sont signalés comme données documentaires non fiables.
+Markdowns remain the source of truth. The SQLite index is derived and can be rebuilt. The search does not initiate any network calls and does not load the entire corpus into the agent context. Excerpts retain source, status and rights; Third-party documents are flagged as unreliable document data.
 
-La collecte est explicite et bornée, ne contourne pas les refus et ne supprime pas les archives. Les contenus sélectionnés dans les archives sont lus sans exécuter les commandes qu'ils contiennent. Les révisions amont nouvelles peuvent ajouter des versions distinctes ; la taille n'est donc pas une mesure du nombre de sujets uniques.
+The collection is explicit and limited, does not bypass refusals and does not delete archives. The contents selected in the archives are read without executing the commands they contain. New upstream revisions may add separate versions; size is therefore not a measure of the number of unique subjects.
 
-Un dépôt Git a été initialisé avant l'écriture du projet. Aucun commit, aucune publication et aucun changement des projets actifs n'ont été effectués. Les catalogues centraux et la documentation des skills ont été complétés.
+A Git repository was initialized before writing the project. No commits, releases, or changes to active projects have been made. The central catalogs and skills documentation have been completed.
 
-## Limites
+## Limits
 
-La bibliothèque n'est pas une collecte exhaustive du web ni un corpus d'entraînement validé. Les textes tiers sont principalement en anglais. La recherche est lexicale, sans traduction automatique ni embeddings. Les références ne prouvent pas une lecture ou une performance business. Les informations changeantes doivent être revérifiées à la source.
+The library is not an exhaustive collection of the web nor a validated training corpus. Third-party texts are mainly in English. The search is lexical, without automatic translation or embeddings. References do not prove reading or business performance. Changing information should be double-checked at the source.
 
-Les skills sont installés localement, mais pas globalement : `~/.codex/skills` est hors des emplacements autorisés en écriture dans cette session. La commande d'installation globale est fournie dans [DEMARRER.md](DEMARRER.md). La découverte automatique des skills doit être constatée au prochain tour dans le dossier approprié ; leur présence sur disque ne prouve pas qu'une session déjà ouverte les a chargés.
+The skills are installed locally, but not globally: `~/.codex/skills` is outside the write-authorized locations in this session. The global installation command is provided in [START.md](DEMARRER.md). The automatic discovery of skills must be noted during the next round in the appropriate file; their presence on disk does not prove that an already open session loaded them.

@@ -1,68 +1,68 @@
-# Validation RAG — 27 octobre 2026
+# RAG Validation — 27 October 2026
 
-Version 0.2. Installation dans `/home/toubi/01 - Dev/bibliotheque-business`, sans modification de la configuration globale de Codex ni activation de service utilisateur pendant la préparation.
+Version 0.2. Installation in `/home/toubi/01 - Dev/bibliotheque-business`, without modifying the global Codex configuration or enabling user services during preparation.
 
-Ajout ultérieur du 27 octobre : [mode navigateur Anna’s Archive sans clé](ANNA-NAVIGATEUR.md), Playwright et Chromium installés. Les essais du parcours utilisent le vrai navigateur avec un serveur local ; le domaine public `.li` testé est parqué et le téléchargement réel depuis Anna’s Archive reste non validé. Le bilan détaillé ci-dessous décrit la livraison RAG initiale ; la suite complète inclut désormais les tests du navigateur.
+Later added 27 October: [Keyless Anna’s Archive browser mode](ANNA-NAVIGATEUR.md), Playwright and Chromium installed. The course tests use the real browser with a local server; the tested public domain `.li` is parked and the actual download from Anna's Archive remains uncommitted. The detailed report below describes the initial RAG delivery; the full suite now includes browser testing.
 
-Ajout suivant : [vérification des domaines et OCR local](ANNA-DOMAINES-OCR.md). Les accueils `.gl`, `.pk` et `.gd` ont été vérifiés avec Chromium ; `.gl` est préféré. L'OCR `ddddocr` et Python 3.12 sont isolés dans `.venv-ocr/`. La suite comporte 51 tests, dont l'OCR réel sur une image originale et sa soumission sur un formulaire local, la sélection de domaine après panne et la reprise de session. Une proposition sur le CAPTCHA public n'a pas été acceptée ; la résolution et le téléchargement autonomes depuis Anna’s Archive ne sont donc pas validés.
+Added following: [domain checking and OCR local](ANNA-DOMAINES-OCR.md). Homes `.gl`, `.pk` and `.gd` have been verified with Chromium; `.gl` is preferred. OCR `ddddocr` and Python 3.12 are isolated in `.venv-ocr/`. The suite features 51 tests, including actual OCR on an original image and its submission on a local form, domain selection after failure and session recovery. A proposal on public CAPTCHA was not accepted; standalone resolution and download from Anna's Archive are therefore not validated.
 
-## Corpus et couverture
+## Corpus and cover
 
-3 449 documents Markdown : 296 guides et fichiers de skills tiers complets, un manuel OpenStax de 744 pages, 24 fiches françaises originales, cinq documents locaux sélectionnés et 3 123 références sans texte intégral.
+3 449 Markdown documents: 296 complete third-party guides and skills files, an OpenStax manual of 744 pages, 24 original French files, five selected local documents and 3 123 references without full text.
 
-8 352 passages sont indexés et vectorisés, avec zéro vecteur manquant. Les nombres actualisés se trouvent dans `data/stats.json` et `data/rag-status-final.json`. Le contexte conserve les sources, droits, offsets et pages PDF lorsqu'elles existent. Les titres de conférences issus des URL restent des métadonnées inférées, pas des transcriptions.
+8 352 passages are indexed and vectorized, with zero missing vectors. The updated numbers are in `data/stats.json` and `data/rag-status-final.json`. The context preserves sources, rights, offsets and PDF pages when they exist. Conference titles from URLs remain inferred metadata, not transcripts.
 
-Les trois fichiers centraux de projets et les deux skills originaux sont sélectionnés explicitement dans `sources-locales.yaml`. Aucun parcours général de `/home/toubi`, aucune importation automatique des dépôts ou fichiers personnels.
+The three central project files and the two original skills are explicitly selected in `sources-locales.yaml`. No general browsing of `/home/toubi`, no automatic import of repositories or personal files.
 
-## Installation réalisée
+## Installation completed
 
-Environnement Python 3.14.8 local, FastEmbed 0.9.1, MCP 2.3.0, ONNX Runtime 1.31.1, NumPy 2.5.4 et pypdf 6.21.2. Les versions transitives sont conservées dans `requirements-lock.txt` ; Ruff et PyYAML servent à la validation.
+Local Python environment 3.14.8, FastEmbed 0.9.1, MCP 2.3.0, ONNX Runtime 1.31.1, NumPy 2.5.4 and pypdf 6.21.2. Transitive versions are preserved in `requirements-lock.txt`; Ruff and PyYAML are used for validation.
 
-Le modèle E5 multilingue quantifié est installé à la révision indiquée dans `RAG.md`. Les empreintes des fichiers ont été vérifiées. Inférence CPU avec quatre threads ; aucun modèle de conversation supplémentaire n'est lancé dans Ollama et aucun GPU n'est requis.
+The quantized multilingual E5 model is installed at the revision specified in `RAG.md`. The files have been fingerprinted. CPU inference with four threads; no additional conversation models are initiated in Ollama and no GPU is required.
 
-Les index de la première livraison sont conservés. Le nouvel index RAG est séparé, dérivé des Markdown, avec cache vectoriel et écriture transactionnelle. Une seconde synchronisation réelle a renvoyé `changed: false` et n'a recalculé aucun vecteur.
+The indexes of the first delivery are preserved. The new RAG index is separate, derived from Markdown, with vector cache and transactional writing. A second real sync returned `changed: false` and did not recalculate any vectors.
 
-## Vérifications fonctionnelles
+## Functional checks
 
-- **25 tests réussis** : anciens tests du moteur lexical, indexation incrémentale, mise à jour et retrait d'entrées dérivées, filtres, exclusion des références par défaut, offsets, bornage du contexte, transactions, imports, chiffrement, absence de texte OCR, ordre EPUB, conservation des originaux, déduplication et surveillance incrémentale.
-- **Lint Ruff réussi** et compilation syntaxique Python ; contrôle shell `sh -n DEMAIN.sh` réussi.
-- **Intégrité SQLite et fichiers** : contrôles de licences et empreintes Markdown, taille des vecteurs, couverture FTS et empreintes du modèle réussis. Rapport `data/rag-integrity.json`.
-- **Embeddings réels** : sorties finies de 384 dimensions, normes unitaires, entrées françaises et anglaises, ainsi qu'un texte dépassant la fenêtre du modèle. Les passages longs sont agrégés par fenêtres au lieu d'être simplement tronqués. Rapport `data/embedding-real-check.json`.
-- **Recherche avec connexions Python bloquées** : chargement du modèle réel et récupération sémantique réussis, sans avertissement de repli lexical. Ce contrôle ne constitue pas une capture de tout le trafic natif du système. Rapport `data/offline-retrieval-check.json`.
-- **MCP stdio réel** : un client du SDK lance le vrai serveur depuis `/tmp`, initialise la session, liste les quatre outils, recherche, lit un document et prépare un contexte. Aucun compte ou appel cloud. Rapport `data/mcp-smoke-final.json`.
-- **Codex CLI réel** : la configuration du serveur a été parsée avec des overrides de lecture, sans écriture globale. Ce contrôle ne prouve pas le chargement dans une nouvelle conversation Codex. La configuration de projet reste soumise à la confiance accordée au projet.
-- **Skills** : les deux skills originaux passent le validateur officiel du skill-creator ; copies locales et sources cohérentes. La découverte automatique globale reste à constater après activation.
+- **25 tests passed**: old lexical engine tests, incremental indexing, updating and removing derived entries, filters, exclusion of default references, offsets, context bounding, transactions, imports, encryption, absence of OCR text, EPUB ordering, retention of originals, deduplication and incremental monitoring.
+- **Lint Ruff succeeded** and Python syntax compilation; shell check `sh -n DEMAIN.sh` successful.
+- **SQLite and File Integrity**: License checks and Markdown fingerprints, vector size, FTS coverage and model fingerprints passed. Report `data/rag-integrity.json`.
+- **Actual embeddings**: finished outputs of 384 dimensions, unit standards, French and English entries, as well as text extending beyond the model window. Long passages are aggregated by windows instead of simply truncated. Report `data/embedding-real-check.json`.
+- **Search with blocked Python connections**: real model loading and semantic recovery successful, without lexical fallback warning. This monitoring does not capture all native traffic on the system. Report `data/offline-retrieval-check.json`.
+- **Real MCP stdio**: an SDK client launches the real server from `/tmp`, initializes the session, lists the four tools, searches, reads a document and prepares a context. No cloud accounts or calls. Report `data/mcp-smoke-final.json`.
+- **Real CLI codex**: the server configuration has been parsed with reading overrides, without global writing. This check does not prove loading into a new Codex conversation. The project configuration remains subject to the trust placed in the project.
+- **Skills**: the two original skills pass the official validator of the skill-creator; local copies and consistent sources. Global automatic discovery remains to be seen after activation.
 
-Les détails et journaux sont conservés dans `data/`. Les tests unitaires de certains cas d'import réseau utilisent une réponse contrôlée ; ils ne sont pas présentés comme une validation de l'API Anna’s Archive.
+Details and logs are kept in `data/`. Unit tests for some network import cases use a controlled response; they are not presented as validation of the Anna’s Archive API.
 
-## Évaluation de récupération
+## Recovery assessment
 
-Vingt questions françaises et anglaises ont été définies pour ce corpus, avec documents attendus. Il s'agit d'un jeu local préparé par l'auteur de l'intégration, sans évaluation indépendante et sans mesure des réponses finales de Codex.
+Twenty French and English questions have been defined for this corpus, with expected documents. This is a local game prepared by the author of the integration, without independent evaluation and without measuring the final answers from Codex.
 
-| Mode | Document attendu dans les 5 premiers | Dans les 8 premiers | MRR sur les 8 premiers |
+| Fashion | Document expected in the first 5 | In the first 8 | MRR on the first 8 |
 |---|---:|---:|---:|
 | Lexical | 19/20 | 19/20 | 0,925 |
-| Sémantique | 20/20 | 20/20 | 0,8708 |
-| Hybride | 19/20 | 19/20 | 0,9 |
+| Semantics | 20/20 | 20/20 | 0,8708 |
+| Hybrid | 19/20 | 19/20 | 0,9 |
 
-La fusion hybride n'est donc pas démontrée supérieure sur ce jeu. Elle reste le mode par défaut disponible, avec les modes lexical et sémantique explicites. Le score de récupération n'est pas une probabilité de vérité.
+Hybrid fusion is therefore not demonstrated to be superior in this game. It remains the default mode available, with explicit lexical and semantic modes. The recovery score is not a probability of truth.
 
-Le premier passage d'évaluation a montré un échec sur la réécriture naturelle. Les deux skills originaux, jusque-là accessibles hors de l'index, ont ensuite été ajoutés au corpus documentaire ; le rapport antérieur est conservé dans `data/evaluation-rag-avant-skills-originaux.json`. Le tableau ci-dessus porte sur le corpus enrichi : ce n'est pas une mesure sur un jeu resté aveugle à toutes les améliorations. Aucun gain général de performance de l'agent n'est annoncé.
+The first evaluation pass showed a failure on the natural rewrite. The two original skills, until then accessible outside the index, were then added to the documentary corpus; the previous report is preserved in `data/evaluation-rag-avant-skills-originaux.json`. The table above concerns the enriched corpus: it is not a measurement on a game that has remained blind to all improvements. No general gain in agent performance is announced.
 
-## Livres et accès externes
+## Books and external access
 
-*Introduction to Business* a été téléchargé depuis le PDF officiel d'OpenStax. La notice de licence de cette édition indique CC BY 4.0. Le PDF de 744 pages et son empreinte sont archivés ; 2 305 039 caractères ont été extraits avec `pdftotext`. Cette licence n'est pas extrapolée aux autres éditions du site.
+*Introduction to Business* has been downloaded from the official OpenStax PDF. The license notice for this edition says CC BY 4.0. The PDF of 744 pages and its imprint are archived; 2 305 039 characters were extracted with `pdftotext`. This license is not extrapolated to other editions of the site.
 
-Les téléchargements de *Principles of Marketing* et *Business Ethics* ont échoué avec des erreurs HTTP. Aucun contournement ni faux import. Le rapport est dans `data/enrichissement-openstax.json`.
+Downloads of *Principles of Marketing* and *Business Ethics* failed with HTTP errors. No bypasses or false imports. The report is in `data/enrichissement-openstax.json`.
 
-Une recherche bibliographique réelle via Open Library a réussi. L'import TXT, EPUB et les refus de PDF sans texte sont testés ; le PDF OpenStax valide le parcours réel de téléchargement et d'extraction. Aucun OCR installé ou annoncé comme disponible.
+An actual bibliographic search via Open Library was successful. TXT, EPUB import and refusal of PDF without text are tested; OpenStax PDF validates the actual download and extraction journey. No OCR installed or advertised as available.
 
-L'API membre Anna’s Archive est **optionnelle et non validée en conditions réelles**. Aucun compte, clé, abonnement ou quota n'a été utilisé. La FAQ officielle était inaccessible ; l'intégration s'appuie sur la documentation du projet tiers référencé dans `RAG.md`. Aucune promesse de disponibilité et aucun contournement de restriction.
+The Anna’s Archive member API is **optional and not validated in real conditions**. No accounts, keys, subscriptions or quotas have been used. The official FAQ was inaccessible; The integration relies on the third-party project documentation referenced in `RAG.md`. No promises of availability and no circumvention of restrictions.
 
-## Activation globale restante
+## Global activation remaining
 
-La commande unique est dans `DEMAIN.md` et `DEMAIN.sh`. Elle regroupe les activations de la première livraison et du RAG : deux skills, MCP global, commande `toubi-biblio` et service utilisateur de synchronisation. Les versions différentes existantes sont conservées.
+The single command is in `DEMAIN.md` and `DEMAIN.sh`. It brings together the activations of the first delivery and the RAG: two skills, global MCP, command `toubi-biblio` and synchronization user service. Existing different versions are retained.
 
-Cette commande n'a pas été appliquée : `~/.codex`, `~/.local/bin` et `~/.config/systemd/user` sont hors des dossiers autorisés en écriture pendant la préparation. Le service n'est donc pas annoncé comme démarré. Son activation et le chargement des outils dans une nouvelle session Codex restent à constater depuis le terminal habituel.
+This command was not applied: `~/.codex`, `~/.local/bin` and `~/.config/systemd/user` are outside the write-enabled folders during preparation. The service is therefore not announced as started. Its activation and loading of tools in a new Codex session remains to be seen from the usual terminal.
 
-Le script d'activation et sa syntaxe sont vérifiés ; le parcours complet d'installation systemd et d'enregistrement global reste non exécuté. Aucune configuration personnelle n'a été remplacée, aucun secret affiché ou enregistré, aucun commit ni publication.
+The activation script and its syntax are checked; the complete systemd installation and global registration journey remains unexecuted. No personal configurations were overwritten, no secrets posted or saved, no commits or releases.

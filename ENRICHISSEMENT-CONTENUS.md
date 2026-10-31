@@ -1,85 +1,85 @@
-# Textes complets ajoutés le 27 octobre 2026
+# Full texts added on October 27 2026
 
-107 documents supplémentaires, environ 7,64 millions de caractères extraits.
-Ce décompte concerne les textes présents, pas les liens de conférences.
+107 additional documents, approximately 7,64 million characters extracted.
+This count concerns the texts present, not the conference links.
 
-| Collection | Documents | Contenu |
+| Collection | Documents | Content |
 |---|---:|---|
-| MIT OpenCourseWare | 64 | 12 transcriptions de New Enterprises et 52 supports de New Enterprises, Entrepreneurial Sales, Entrepreneurial Marketing |
-| Stanford | 34 | 33 conférences/entretiens complets et un extrait sur les débuts de NVIDIA |
-| Virginia Tech | 2 | Fundamentals of Business, 4e édition (2023), 448 pages PDF ; Strategic Management (2020), 352 pages PDF |
-| Classiques Gutenberg | 3 | My Life and Work ; Autobiography of Andrew Carnegie ; The Art of Money Getting |
-| Livres fournis par Toubi | 4 | $100M Offers ; $100M Lost Chapters ; The Personal MBA ; commentaire tiers de Ben Preston |
+| MIT OpenCourseWare | 64 | 12 transcriptions of New Enterprises and 52 supports of New Enterprises, Entrepreneurial Sales, Entrepreneurial Marketing |
+| Stanford | 34 | 33 full lectures/interviews and an excerpt on the beginnings of NVIDIA |
+| Virginia Tech | 2 | Fundamentals of Business, 4th Edition (2023), 448 PDF pages; Strategic Management (2020), 352 PDF pages |
+| Gutenberg Classics | 3 | My Life and Work; Autobiography of Andrew Carnegie; The Art of Getting Money |
+| Books provided by Toubi | 4 | $100M Offers; $100M Lost Chapters; The Personal MBA; third party comment from Ben Preston |
 
-Exemples Stanford : Reid Hoffman, Live Life in Permanent Beta ; Jensen Huang,
-First-Principles Thinking ; Brian Chesky, Managing Through Crisis and Uncertainty ;
-Eric Yuan, Winning a Crowded Market ; Eric Ries, Evangelizing for the Lean Startup ;
-Steve Blank, Entrepreneurship Strengthens a Nation ; How Instagram Scaled.
+Examples Stanford: Reid Hoffman, Live Life in Permanent Beta; Jensen Huang,
+First-Principles Thinking; Brian Chesky, Managing Through Crisis and Uncertainty;
+Eric Yuan, Winning a Crowded Market ; Eric Ries, Evangelizing for the Lean Startup;
+Steve Blank, Entrepreneurship Strengthens a Nation; How Instagram Scaled.
 
-Les livres fournis ont été repérés dans le dossier Downloads expressément indiqué
-par Toubi. Leurs noms de fichiers ne prouvent ni authenticité éditoriale ni droits
-de redistribution. Le commentaire de Ben Preston est identifié comme ouvrage
-tiers, pas attribué à Alex Hormozi.
+The books provided were located in the Downloads folder expressly indicated
+by Toubi. Their file names prove neither editorial authenticity nor rights
+of redistribution. Ben Preston's commentary is identified as a work
+third party, not attributed to Alex Hormozi.
 
-Les originaux restent dans `archives/` et les téléchargements de Toubi restent à
-leur emplacement initial. Les EPUB sont extraits dans l'ordre du sommaire de
-lecture interne. L'AZW3 Lost Chapters a été converti en EPUB avec mobi 0.4.1,
-sans déchiffrement ; l'original AZW3 est également archivé. Pour les PDF, les
-numéros de page désignent les pages du fichier, pas nécessairement la pagination
-imprimée. Les tableaux et illustrations ne sont pas reconstitués.
+Originals remain in `archives/` and downloads from Toubi remain in
+their original location. EPUBs are extracted in the order of the summary of
+internal reading. AZW3 Lost Chapters was converted to EPUB with mobi 0.4.1,
+without decryption; the original AZW3 is also archived. For PDFs,
+page numbers denote the pages of the file, not necessarily the pagination
+printed. The tables and illustrations are not reconstructed.
 
-## Provenance et limites
+## Origin and limits
 
-MIT : https://ocw.mit.edu/courses/15-390-new-enterprises-spring-2013/
-et les deux autres cours enregistrés dans `enrich_sources.py`. La licence OCW
-comporte des exceptions pour des éléments tiers ; conserver les notices originales.
-Les notes de marketing de 2002 sont un document historique, pas un état du marché actuel.
+MIT: https://ocw.mit.edu/courses/15-390-new-enterprises-spring-2013/
+and the other two courses saved in `enrich_sources.py`. The OCW license
+includes exceptions for third-party elements; keep the original notices.
+2002's marketing notes are a historical document, not a state of the current market.
 
-Virginia Tech : https://doi.org/10.21061/fundamentalsofbusiness4e et
-https://doi.org/10.21061/strategicmanagement. Les licences de leurs éditions
-respectives sont enregistrées dans les métadonnées.
+Virginia Tech: https://doi.org/10.21061/fundamentalsofbusiness4e and
+https://doi.org/10.21061/strategicmanagement. The licenses of their editions
+respective are recorded in the metadata.
 
-Stanford : transcriptions directement publiées par STVP ou GSB. Les anciens PDF
-WordPress ont renvoyé 404 : les pages actuelles et leur vue imprimable ont permis
-de récupérer le texte. Une transcription officielle peut contenir des erreurs.
-Ces documents restent sous copyright ; aucune licence ouverte n'est affirmée.
-La réussite d'un intervenant ne prouve pas l'efficacité universelle de ses conseils.
+Stanford: transcripts directly published by STVP or GSB. Old PDFs
+WordPress returned 404: current pages and their printable view allowed
+to recover the text. An official transcript may contain errors.
+These documents remain under copyright; no open license is asserted.
+The success of a speaker does not prove the universal effectiveness of his advice.
 
-Gutenberg : éditions anglaises historiques, notices conservées. Ces ouvrages
-témoignent de leur époque ; leurs conseils ne constituent pas des faits actuels.
+Gutenberg: historical English editions, records preserved. These works
+bear witness to their time; their advice does not constitute current facts.
 
-Les refus OpenStax et les échecs réseau ne sont pas comptés comme des imports.
-Aucun livre supplémentaire n'a été téléchargé sur Anna’s Archive.
+OpenStax rejections and network failures are not counted as imports.
+No additional books have been uploaded to Anna’s Archive.
 
-## Accès RAG
+## RAG access
 
-Les sources recherchables sont `livres-toubi`, `stanford-transcripts`, `mit-ocw`,
-`virginia-tech` et `gutenberg-business`. Exemple :
+Searchable sources are `livres-toubi`, `stanford-transcripts`, `mit-ocw`,
+`virginia-tech` and `gutenberg-business`. Example:
 
 ```sh
 .venv/bin/python rag.py search 'Comment construire une offre avec une équation de valeur ?' --source livres-toubi
 .venv/bin/python rag.py search 'Comment comprendre les besoins des clients avant de développer le produit ?' --source stanford-transcripts
 ```
 
-Après un nouvel import, lancer `.venv/bin/python sync.py`.
-La collecte web reste explicite : `enrich_sources.py` utilise une sélection bornée
-dans `sources-completes.json`, pas un crawl illimité. Les imports Virginia Tech
-et personnels de cette livraison sont consignés séparément dans `data/`.
+After a new import, launch `.venv/bin/python sync.py`.
+Web collection remains explicit: `enrich_sources.py` uses a bounded selection
+in `sources-completes.json`, not unlimited crawl. Virginia Tech imports
+and personnel of this delivery are recorded separately in `data/`.
 
-Rapports : `data/enrichissement-bilan.json`,
+Reports: `data/enrichissement-bilan.json`,
 `data/enrichissement-sources-completes.json`,
 `data/enrichissement-stanford-actuel.json`, `data/imports-livres-toubi.json`,
 `data/import-hormozi-lost-chapters.json`.
 
-## Prochains livres pertinents
+## Upcoming relevant books
 
-Sélection à acquérir ou fournir en copie personnelle : The Lean Startup (Eric
+Selection to acquire or provide as a personal copy: The Lean Startup (Eric
 Ries), SPIN Selling (Neil Rackham), Influence (Robert Cialdini), Made to Stick
-(Chip et Dan Heath), The Copywriter's Handbook (Robert Bly). Ils figurent dans la
-[liste officielle de Kaufman](https://personalmba.com/best-business-books/).
-Ces cinq livres ne sont pas téléchargés et ne sont pas présentés comme disponibles
-dans la base. La conférence d'Eric Ries est, elle, disponible en texte complet.
+(Chip and Dan Heath), The Copywriter's Handbook (Robert Bly). They appear in the
+[official Kaufman listing](https://personalmba.com/best-business-books/).
+These five books are not downloaded and are not shown as available
+in the base. Eric Ries' conference is available in full text.
 
-Pour MOBI/AZW3 non chiffré : le convertisseur local isolé est dans `.venv-books/`,
-avec dépendances verrouillées dans `requirements-books.txt`. Il est appelé par
-`books.py import` ; les formats protégés ne sont pas déchiffrés.
+For unencrypted MOBI/AZW3: the isolated local converter is in `.venv-books/`,
+with dependencies locked in `requirements-books.txt`. He is called by
+`books.py import` ; protected formats are not decrypted.

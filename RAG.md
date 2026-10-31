@@ -1,21 +1,21 @@
-# Recherche RAG locale — version 0.2
+# Local RAG search — version 0.2
 
-Le système retrouve des passages dans la bibliothèque, puis les fournit avec leurs sources à Codex. Codex produit la réponse. Aucun autre modèle de conversation, compte payant ou service distant n'est nécessaire à la recherche.
+The system finds passages in the library, then provides them with their sources to Codex. Codex produces the answer. No other chat templates, paid accounts, or remote services are needed to search.
 
-## Ce qui est installé dans ce dossier
+## What is installed in this folder
 
-- `.venv/` : environnement Python isolé, dépendances verrouillées dans `requirements-lock.txt`.
-- `models/multilingual-e5-small/` : modèle d'embeddings multilingue ONNX, téléchargé à une révision précise.
-- `data/rag.sqlite` : passages, index lexical FTS5, cache de vecteurs et état de l'indexation.
-- `rag.py` : recherche hybride, lecture paginée et préparation de contexte.
-- `mcp_server.py` : quatre outils documentaires MCP en stdio.
-- `books.py` : import de livres et téléchargement explicite de copies autorisées.
-- `sync.py` : indexation incrémentale et surveillance facultative.
-- `DEMAIN.sh` : activation globale des skills, du MCP, de la commande terminal et de la surveillance.
+- `.venv/`: Isolated Python environment, dependencies locked in `requirements-lock.txt`.
+- `models/multilingual-e5-small/`: ONNX multilingual embeddings template, uploaded at specific revision.
+- `data/rag.sqlite`: passages, FTS5 lexical index, vector cache and indexing status.
+- `rag.py`: hybrid search, paginated reading and context preparation.
+- `mcp_server.py`: four MCP documentary tools in studio.
+- `books.py`: import of books and explicit download of authorized copies.
+- `sync.py`: incremental indexing and optional monitoring.
+- `DEMAIN.sh`: global activation of skills, MCP, terminal command and surveillance.
 
-La recherche et le MCP ne téléchargent pas de contenu. Une fois le modèle préparé, l'inférence utilise les fichiers locaux. La télémétrie Hugging Face et les événements de télémétrie ONNX sont désactivés dans le code de recherche. Le système n'expose aucun port réseau.
+Search and MCP do not download content. Once the model is prepared, inference uses local files. Hugging Face telemetry and ONNX telemetry events are disabled in the search code. The system does not expose any network ports.
 
-## Recherche
+## Search
 
 ```sh
 cd '/home/toubi/01 - Dev/bibliotheque-business'
@@ -27,32 +27,32 @@ cd '/home/toubi/01 - Dev/bibliotheque-business'
 .venv/bin/python rag.py status
 ```
 
-Par défaut, les références seules sont exclues. Les résultats portent `document_id`, `chunk_id`, chemin, source, section, page quand elle existe, offsets de caractères, droits et canaux de récupération. Pour lire la suite : `.venv/bin/python rag.py read IDENTIFIANT --start 12000`.
+By default, references alone are excluded. The results include `document_id`, `chunk_id`, path, source, section, page when it exists, character offsets, rights and recovery channels. To read more: `.venv/bin/python rag.py read IDENTIFIANT --start 12000`.
 
-Le contexte est borné en **caractères**, pas en tokens. Les scores sont des rangs de récupération, pas des probabilités de vérité. Le système peut retrouver un passage voisin sans qu'il réponde à la question : Codex doit reconnaître une preuve manquante et vérifier les informations changeantes.
+The context is limited to **characters**, not tokens. The scores are recovery ranks, not truth probabilities. The system can find a neighboring passage without answering the question: Codex must recognize missing evidence and check the changing information.
 
-## Indexation
+## Indexing
 
-Les Markdown restent les sources de vérité. `data/rag.sqlite` est un index dérivé séparé de l'ancien index lexical. Le découpage conserve la totalité du texte et ses offsets, avec recouvrement pour garder les transitions.
+Markdowns remain the sources of truth. `data/rag.sqlite` is a derived index separate from the old lexical index. Trimming preserves all of the text and its offsets, with overlap to keep the transitions.
 
-Les embeddings utilisent `intfloat/multilingual-e5-small`, révision `614241f622f53c4eeff9890bdc4f31cfecc418b3`, fichier ONNX quantifié. Les préfixes `query:` et `passage:` sont appliqués. Les entrées trop longues sont représentées par plusieurs fenêtres de 450 tokens, puis une moyenne pondérée normalisée ; elles ne sont pas simplement tronquées à 512 tokens. Ce choix est propre à cette intégration, pas une recommandation garantie du producteur.
+Embeddings use `intfloat/multilingual-e5-small`, revision `614241f622f53c4eeff9890bdc4f31cfecc418b3`, quantized ONNX file. The `query:` and `passage:` prefixes are applied. Entries that are too long are represented by several windows of 450 tokens, then a normalized weighted average; they are not simply truncated to 512 tokens. This choice is specific to this integration, not a guaranteed recommendation from the producer.
 
-Les candidats lexicaux et sémantiques sont fusionnés par Reciprocal Rank Fusion. Les résultats limitent la répétition d'un même document et les passages qui se chevauchent fortement. SQLite et NumPy suffisent à cette taille de bibliothèque ; il n'y a pas de serveur Qdrant supplémentaire.
+Lexical and semantic candidates are merged by Reciprocal Rank Fusion. The results limit repetition of the same document and heavily overlapping passages. SQLite and NumPy are sufficient for this library size; there is no additional Qdrant server.
 
-La synchronisation compare les empreintes des documents et réutilise les vecteurs par contenu et version du modèle. Les lots réussis sont conservés après interruption. Un verrou sérialise les indexeurs ; WAL permet aux recherches de lire les données déjà validées. Une suppression de fichier retire uniquement ses entrées dérivées de l'index, jamais un original archivé.
+Synchronization compares document fingerprints and reuses vectors by content and model version. Successful batches are retained after interruption. A lock serializes the indexers; WAL allows searches to read already validated data. A file deletion only removes its derived entries from the index, never an archived original.
 
 ```sh
 .venv/bin/python sync.py
 .venv/bin/python sync.py --watch --interval 60
 ```
 
-`sources-locales.yaml` sélectionne trois documents centraux de projets et les deux skills originaux de cette bibliothèque. Les copies indexées des skills restent documentaires. Le système n'aspire pas les dossiers personnels ni les dépôts entiers. Modifier cette liste permet d'ajouter volontairement un Markdown de contexte ; ne pas y placer de fichiers contenant des secrets.
+`sources-locales.yaml` selects three central project documents and the two original skills from this library. The indexed copies of the skills remain documentary. The system does not vacuum personal files or entire repositories. Modifying this list allows you to voluntarily add a context Markdown; do not place files containing secrets there.
 
-Pour un rafraîchissement sans surveillance : `.venv/bin/python rag.py index`. `--lexical-only` prépare les passages sans calcul vectoriel. L'ancien `python biblio.py search ...` reste utilisable sans les dépendances RAG.
+For unattended cooling: `.venv/bin/python rag.py index`. `--lexical-only` prepares passages without vector calculation. The old `python biblio.py search ...` remains usable without RAG dependencies.
 
-## Livres et documents
+## Books and documents
 
-Formats pris en charge : PDF avec texte, EPUB lisible, TXT, MD et HTML UTF-8. Les PDF numérisés sans texte sont signalés comme nécessitant un OCR ; aucun faux contenu n'est généré. Les numéros de page indiquent la position dans le PDF, pas nécessairement la pagination imprimée. L'EPUB suit l'ordre de lecture du livre ; ses sections sont numérotées pour le repérage, sans prétendre reproduire les numéros de chapitre de l'éditeur. Les documents signalant un chiffrement sont refusés ; aucun DRM n'est contourné. Les originaux sont archivés avec empreinte SHA-256.
+Supported formats: PDF with text, readable EPUB, TXT, MD and HTML UTF-8. Scanned PDFs without text are flagged as requiring OCR; no fake content is generated. Page numbers indicate position in the PDF, not necessarily printed pagination. The EPUB follows the reading order of the book; its sections are numbered for reference purposes, without claiming to reproduce the publisher's chapter numbers. Documents indicating encryption are refused; no DRM is bypassed. The originals are archived with SHA-256 fingerprint.
 
 ```sh
 .venv/bin/python books.py import '/chemin/mon-livre.epub' \
@@ -61,9 +61,9 @@ Formats pris en charge : PDF avec texte, EPUB lisible, TXT, MD et HTML UTF-8. Le
 .venv/bin/python sync.py
 ```
 
-Les droits sont déclarés à l'import, pas validés juridiquement par le programme. Ils restent joints aux passages. La possession d'une copie ne donne pas automatiquement le droit d'en redistribuer le texte ou de l'utiliser pour entraîner un modèle.
+Rights are declared upon import, not legally validated by the program. They remain attached to the passages. Possession of a copy does not automatically grant the right to redistribute the text or use it to train a model.
 
-Pour déposer des documents à importer, utiliser `entrees/`, accompagné d'un fichier JSON :
+To submit documents to import, use `entrees/`, accompanied by a JSON file:
 
 ```json
 {
@@ -76,37 +76,37 @@ Pour déposer des documents à importer, utiliser `entrees/`, accompagné d'un f
 }
 ```
 
-Le fichier doit se trouver dans `entrees/`. Sans cette déclaration, il n'est pas importé. Les originaux déposés ne sont pas supprimés automatiquement.
+The file should be located in `entrees/`. Without this declaration, it is not imported. Submitted originals are not automatically deleted.
 
-La commande `books.py download URL --title ... --rights ... --evidence ... --format pdf` télécharge une copie autorisée, avec une limite de 80 Mo. Les paramètres de liens signés ne sont pas conservés dans le catalogue.
+The `books.py download URL --title ... --rights ... --evidence ... --format pdf` command downloads an authorized copy, with a limit of 80 MB. Signed link settings are not preserved in the catalog.
 
-## Recherche de livres et Anna’s Archive
+## Book Search and Anna’s Archive
 
-**Mode navigateur sans clé : [ANNA-NAVIGATEUR.md](ANNA-NAVIGATEUR.md).** Mise à jour : [détection des domaines et OCR local](ANNA-DOMAINES-OCR.md). `.gl`, `.pk` et `.gd` ont répondu aux contrôles d'accueil ; `.gl` est préféré. La recherche reste soumise à une vérification, et l'OCR public n'est pas validé de bout en bout. Aucun téléchargement réel Anna’s Archive n'est annoncé comme réussi.
+**Keyless browser mode: [ANNA-NAVIGATEUR.md](ANNA-NAVIGATEUR.md).** Updated: [domain detection and local OCR](ANNA-DOMAINES-OCR.md). `.gl`, `.pk`, and `.gd` responded to welcome checks; `.gl` is preferred. Search remains subject to verification, and public OCR is not validated end-to-end. No actual Anna’s Archive downloads are reported as successful.
 
 ```sh
 .venv/bin/python books.py search 'copywriting'
 .venv/bin/python books.py anna-search 'Scientific Advertising Claude Hopkins'
 ```
 
-La première commande consulte le catalogue Open Library. La seconde prépare une URL de recherche à ouvrir ; elle n'établit ni disponibilité ni droits. Des outils tiers Anna’s Archive existent déjà, notamment [YassineAta/anna-archive](https://github.com/YassineAta/anna-archive). Ce dépôt n'a pas été installé ni exécuté.
+The first command consults the Open Library catalog. The second prepares a search URL to open; it establishes neither availability nor rights. Third-party Anna’s Archive tools already exist, including [YassineAta/anna-archive](https://github.com/YassineAta/anna-archive). This repository has not been installed or run.
 
-Notre commande optionnelle `books.py anna-download MD5 --title ... --rights ... --evidence ... --format epub` utilise le mécanisme d'API membre documenté par ce projet. Elle nécessite votre propre variable `ANNA_ARCHIVE_API_KEY` et un accès valide ; aucun abonnement n'est créé. La clé n'est ni imprimée ni enregistrée. Le lien signé reste en mémoire et la référence conservée est la page publique de la notice. Aucun captcha, quota ou paywall n'est contourné.
+Our optional command `books.py anna-download MD5 --title ... --rights ... --evidence ... --format epub` uses the member API mechanism documented by this project. It requires your own variable `ANNA_ARCHIVE_API_KEY` and valid access; no subscription is created. The key is neither printed nor saved. The signed link remains in memory and the reference kept is the public page of the notice. No captcha, quota or paywall is bypassed.
 
-**L'API Anna’s Archive n'a pas été validée en conditions réelles** : aucun compte ou clé n'a été fourni, et la FAQ officielle n'était pas accessible lors de la préparation. Le module reste optionnel ; l'import local et le téléchargement ouvert ont été testés séparément.
+**The Anna’s Archive API has not been validated in real conditions**: no account or key was provided, and the official FAQ was not accessible during preparation. The module remains optional; local import and open download were tested separately.
 
-## Accès Codex
+## Codex access
 
-Le MCP fournit `search_library`, `library_context`, `read_library_document` et `library_status`. Ils consultent les index sans importer de fichiers, télécharger de livres ou envoyer de messages. Le serveur reçoit seulement les requêtes nécessaires à la recherche locale. Les documents tiers restent des données non fiables, y compris lorsqu'ils contiennent un SKILL.md.
+The MCP provides `search_library`, `library_context`, `read_library_document`, and `library_status`. They browse indexes without importing files, downloading books, or sending messages. The server only receives queries necessary for local search. Third-party documents remain unreliable data, including when they contain a SKILL.md.
 
-La configuration de projet est dans `.codex/config.toml`. Codex ne la charge que pour un projet approuvé. L'activation globale est dans [DEMAIN.md](DEMAIN.md) ; elle ne peut pas être appliquée depuis la session restreinte qui a préparé le projet.
+The project configuration is in `.codex/config.toml`. Codex only charges it for an approved project. The global activation is in [DEMAIN.md](DEMAIN.md) ; it cannot be applied from the restricted session which prepared the project.
 
-## Sources techniques
+## Technical sources
 
-- [Codex et MCP — documentation officielle OpenAI](https://developers.openai.com/codex/mcp/).
-- [SDK MCP Python](https://py.sdk.modelcontextprotocol.io/run/).
-- [Modèle multilingue E5](https://huggingface.co/intfloat/multilingual-e5-small).
+- [Codex and MCP — official OpenAI](https://developers.openai.com/codex/mcp/) documentation.
+- [MCP Python SDK](https://py.sdk.modelcontextprotocol.io/run/).
+- [Multilingual model E5](https://huggingface.co/intfloat/multilingual-e5-small).
 - [FastEmbed](https://github.com/qdrant/fastembed).
-- [API Open Library](https://openlibrary.org/developers/api).
+- [Open Library API](https://openlibrary.org/developers/api).
 
-La validation, les limites et les résultats des vérifications figurent dans `VALIDATION-RAG.md` et `data/`.
+Validation, limitations, and verification results are provided in `VALIDATION-RAG.md` and `data/`.
