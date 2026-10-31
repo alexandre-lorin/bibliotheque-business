@@ -1,0 +1,22 @@
+[
+  {"query":"Comment rendre une réponse moins artificielle sans changer ses faits ?","expected_ids":["toubi-voix-naturelle"],"expected_paths":["humanizer"]},
+  {"query":"Comment savoir ce qui a poussé un client à chercher une solution ?","expected_ids":["toubi-entretien-client","toubi-voix-client"],"expected_paths":["customer-research/"]},
+  {"query":"Quelles informations faut-il réunir avant de rédiger une page de vente ?","expected_ids":["toubi-brief-copywriting","toubi-landing-page"],"expected_paths":["copywriting/"]},
+  {"query":"Comment afficher un prix mensuel avec une facturation annuelle sans ambiguïté ?","expected_ids":["toubi-tarification"],"expected_paths":["pricing/"]},
+  {"query":"Comment expliquer ce qui se passe après un clic sur le bouton ?","expected_ids":["toubi-appels-action"],"expected_paths":["copywriting/","cro/"]},
+  {"query":"Comment répondre aux hésitations et aux objections avant un achat ?","expected_ids":["toubi-objections","toubi-qualification"],"expected_paths":["sales-enablement/","offers/"]},
+  {"query":"Comment éviter d'inventer des témoignages ou des résultats commerciaux ?","expected_ids":["toubi-preuves","toubi-cas-client","toubi-revue-texte"],"expected_paths":["copywriting/"]},
+  {"query":"Quelle méthode pour écrire un premier email de prospection ciblé ?","expected_ids":["toubi-email-prospection"],"expected_paths":["cold-email/"]},
+  {"query":"Comment arrêter une séquence d'emails quand le client a déjà répondu ?","expected_ids":["toubi-sequence-email"],"expected_paths":["emails/"]},
+  {"query":"Comment organiser une étude de cas client avec preuves et limites ?","expected_ids":["toubi-cas-client","toubi-preuves"],"expected_paths":["sales-enablement/"]},
+  {"query":"Comment choisir un sujet de contenu utile à mon activité et le distribuer ?","expected_ids":["toubi-strategie-contenu"],"expected_paths":["content-strategy/"]},
+  {"query":"Comment comparer mon produit aux alternatives réellement utilisées ?","expected_ids":["toubi-positionnement","toubi-proposition-valeur"],"expected_paths":["product-marketing/","competitors/"]},
+  {"query":"Comment analyser une publicité sans prétendre connaître sa rentabilité ?","expected_ids":["toubi-analyse-publicite"],"expected_paths":["ad-creative/","ads/"]},
+  {"query":"Comment préparer un test A/B avant de regarder les résultats ?","expected_ids":["toubi-experience-conversion"],"expected_paths":["ab-testing/"]},
+  {"query":"Comment transformer une conférence en fiche d'apprentissage vérifiable ?","expected_ids":["toubi-conference-fiche"],"expected_paths":[]},
+  {"query":"Comment préparer des documents pour une recherche RAG avec citations ?","expected_ids":["toubi-corpus-ia"],"expected_paths":[]},
+  {"query":"How do I design a guarantee without promising results I cannot support?","expected_ids":["toubi-offre"],"expected_paths":["offers/"]},
+  {"query":"What should a product marketing positioning brief contain?","expected_ids":["toubi-positionnement"],"expected_paths":["product-marketing/"]},
+  {"query":"How should I segment onboarding emails and stop after activation?","expected_ids":["toubi-sequence-email"],"expected_paths":["emails/","onboarding/"]},
+  {"query":"Où se trouve le projet Nothing Link dans mon organisation ?","expected_ids":["contexte-d80ee4835103a8c3","contexte-86a63fdf0b5e6ef9"],"expected_paths":[]}
+]

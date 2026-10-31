@@ -1,0 +1,7 @@
+{
+  "preferred": "https://annas-archive.gl",
+  "candidates": ["https://annas-archive.gl", "https://annas-archive.pk", "https://annas-archive.gd"],
+  "discovery_sources": ["https://shadowlibraries.github.io/DirectDownloads/AnnasArchive/", "https://shadowlibraries.github.io/uptime-monitor/"],
+  "max_candidates": 8,
+  "notice": "Adresses annoncées par la page .gl et fournies par Toubi. Les annuaires donnent des pistes, pas une preuve de disponibilité ou d’identité."
+}
